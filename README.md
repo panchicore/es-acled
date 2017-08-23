@@ -22,10 +22,11 @@ Crawler for published excels in here (http://www.acleddata.com/asia-data/)
 python asia_download_and_index.py
 ```
 
-
-## Contribute
-Please fork this repo.
-
 ## Todo
 1. ~~Real time updates~~
 2. Unit tests
+3. Use logstash to index quicker
+
+
+## Contribute
+Please fork this repo.
