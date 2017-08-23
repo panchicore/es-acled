@@ -2,6 +2,7 @@ import requests
 import es
 from requests.auth import HTTPBasicAuth
 
+
 def create_indice(delete=None):
     """
 

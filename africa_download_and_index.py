@@ -1,26 +1,29 @@
-import json
-import os
 import datetime
 import requests
-from requests.auth import HTTPBasicAuth
+import es
 
 ACLED_URL = "https://api.acleddata.com/acled/read"
-ES_HOST = os.environ.get("ES_HOST")
-ES_USER = os.environ.get("ES_USER")
-ES_PASSWORD = os.environ.get("ES_PASSWORD")
-ES_ACLED_INDEX = os.environ.get("ES_ACLED_INDEX")
-URL = ES_HOST + ES_ACLED_INDEX + "/event"
 
-def index(data):
-    for event in data:
-        event["id"] = event["data_id"]
-        event["@timestamp"] = event["event_date"]
-        event["location_name"] = event["location"]
-        event["location"] = {"lat": event["latitude"], "lon": event["longitude"]}
 
-        res = requests.post(URL, json=event, auth=HTTPBasicAuth(ES_USER, ES_PASSWORD))
+def hydrate_event(event):
+    """
+    Add reelevant/contextual info to the event dict
+    :param event:
+    :return:
+    """
+    event["id"] = event["data_id"]
+    event["@timestamp"] = event["event_date"]
+    event["location_name"] = event["location"]
+    event["location"] = {"lat": event["latitude"], "lon": event["longitude"]}
+    event["zone"] = "africa"
+    return event
+
 
 def download():
+    """
+
+    :return:
+    """
     years = range(1997, datetime.date.today().year + 1)
 
     print "downloading data for years:", years
@@ -36,10 +39,14 @@ def download():
 
             print "downloading", year, "page", page
             res = requests.get(ACLED_URL, params=params)
-            data = res.json()
 
-            print "indexing on", ES_ACLED_INDEX, "..."
-            index(data['data'])
+            data = res.json()
+            events = data['data']
+            print "indexing on", es.ES_ACLED_INDEX, "..."
+
+            for event in events:
+                event = hydrate_event(event)
+                es.index(event)
 
             page += 1
             if data['count'] < 500:
