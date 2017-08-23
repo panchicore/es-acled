@@ -1,1 +1,4 @@
-0 0 * * *
+# Asia
+0 0 * * 2 /home/luis/.virtualenvs/es-acled/bin/python /home/luis/www/es-acled/asia_download_and_index.py
+# Africa
+0 3 * * * /home/luis/.virtualenvs/es-acled/bin/python /home/luis/www/es-acled/africa_realtime.py
