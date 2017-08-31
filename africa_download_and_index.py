@@ -26,7 +26,7 @@ def download():
     """
     years = range(1997, datetime.date.today().year + 1)
 
-    print "downloading data for years:", years
+    print datetime.datetime.today(), "- downloading data for years:", years
 
     for year in years:
         paginate = True

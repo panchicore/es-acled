@@ -1,5 +1,6 @@
 import os
 import re
+import datetime
 
 import es
 from urllib import urlretrieve
@@ -16,6 +17,8 @@ def start():
     soup = BeautifulSoup(res.content, "html.parser")
     download_links = []
     events = []
+
+    print datetime.datetime.today(), "- starting..."
 
     for link in soup.find_all('a'):
         if link.get('href').lower().count("ACLED-Asia-Running-File".lower()) > 0:
@@ -115,7 +118,7 @@ def start():
 
             events.append(event)
 
-    print "indexing", len(events), "events..."
+    print datetime.datetime.today(), "- indexing", len(events), "events..."
     for event in events:
         es.index(event)
 
